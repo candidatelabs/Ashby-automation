@@ -1,3 +1,25 @@
+/**
+ * export.ts — CSV and JSON export functions.
+ *
+ * exportJSON() — writes the raw { companies, jobs, candidates } structure to a JSON file
+ * exportCSV()  — writes a flat CSV with one row per candidate
+ *
+ * CSV columns (in order):
+ *   company_name, job_title, job_id, candidate_name, candidate_id,
+ *   pipeline_stage, decision_status, stage_type,
+ *   current_stage_index, total_stages, stage_progress,
+ *   last_activity_at, days_in_stage, needs_scheduling,
+ *   credited_to, source,
+ *   feedback_count, latest_recommendation, latest_feedback_author, latest_feedback_date,
+ *   current_stage_interviews, current_stage_avg_score, current_stage_date,
+ *   interview_history_summary
+ *
+ * The interview columns (current_stage_*, interview_history_summary) are only populated
+ * when the --detailed flag was used during extraction.
+ *
+ * "Current stage" is defined as interviews within 1 day of the most recent interview event.
+ * All earlier interviews appear in interview_history_summary.
+ */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Candidate, Company, Job } from './types.js';

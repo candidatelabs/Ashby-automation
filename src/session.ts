@@ -1,3 +1,19 @@
+/**
+ * session.ts — Authentication and session management.
+ *
+ * Sessions are saved to / loaded from `.ashby-session.json` (a cookie map + optional CSRF token).
+ *
+ * Two ways to create a session:
+ *   bootstrapSession()              Opens a real Chrome window for SSO login; saves cookies on close
+ *   createSessionFromCookieHeader() Parses a cookie string pasted from browser DevTools
+ *
+ * loadSession() tries sources in order:
+ *   1. .ashby-session.json (works even while the browser window is still open)
+ *   2. Playwright persistent browser context at .playwright-browser-data/ (if browser is closed)
+ *
+ * Sessions expire when Ashby's cookies expire (~7 days for ashby_session_token).
+ * Re-auth: npm run start -- auth-cookie --cookie "<new cookie string>"
+ */
 import { chromium, BrowserContext } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
