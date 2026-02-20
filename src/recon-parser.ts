@@ -1,3 +1,16 @@
+/**
+ * recon-parser.ts — Dev/debug tool for reading a recon capture log.
+ *
+ * Parses ashby-recon-log.json (produced by recon.ts) and lets you look up
+ * GraphQL queries by operation name or keyword.
+ *
+ * Key exports:
+ *   parseReconLog()            — Returns all captured GraphQL queries
+ *   findQueryByOperationName() — Looks up a specific query by operation name
+ *   findPipelineQueries()      — Finds the ApiOpenJobs and ApiGetActiveApplications queries
+ *
+ * NOT required for normal extraction — used only during API discovery / debugging.
+ */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 

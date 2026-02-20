@@ -1,4 +1,17 @@
 #!/usr/bin/env node
+/**
+ * cli.ts — Entry point. Defines all CLI commands using Commander.js.
+ *
+ * Commands:
+ *   auth          Open a real Chrome window for SSO login and save the session
+ *   auth-cookie   Save a session from a cookie string pasted from DevTools
+ *   recon         Capture live API traffic while browsing Ashby (dev/debug tool)
+ *   extract       Fetch pipeline data for all orgs and export CSV + JSON
+ *
+ * Build:   npm run build
+ * Run:     npm run start -- <command> [options]
+ * Example: npm run start -- extract --detailed
+ */
 import { Command } from 'commander';
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';

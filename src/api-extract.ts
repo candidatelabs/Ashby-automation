@@ -1,3 +1,20 @@
+/**
+ * api-extract.ts — Orchestration for the `extract` CLI command.
+ *
+ * extractCommand() runs the full pipeline:
+ *   1. Load session from .ashby-session.json
+ *   2. Discover all accessible organizations (fetchAllAvailableOrgs)
+ *   3. For each org: switch context and fetch jobs + candidates (fetchPipelineForOrg)
+ *   4. Optionally enrich with interview details (enrichCandidatesWithDetails)
+ *   5. Export to timestamped CSV and JSON in output/
+ *
+ * ExtractOptions:
+ *   maxOrgs           — Limit orgs processed (useful for testing, e.g. --max-orgs 2)
+ *   retries           — Retry count per org on failure
+ *   detailed          — Fetch full interview feedback per candidate (slower, default: true)
+ *   detailedConcurrent — Concurrent detail requests per org (default: 5)
+ *   orgFilter         — Case-insensitive name filter to run on a single org
+ */
 import { loadSession } from './session.js';
 import { fetchAllAvailableOrgs, fetchPipelineForOrg, enrichCandidatesWithDetails } from './client.js';
 import { exportJSON, exportCSV } from './export.js';

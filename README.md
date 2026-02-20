@@ -169,20 +169,21 @@ npm run start -- auth-cookie --cookie "your_new_cookie"
 ```
 Ashby Automation/
 ├── src/
-│   ├── cli.ts              # Command-line interface
-│   ├── session.ts          # Authentication & session management
-│   ├── client.ts           # API client with org switching
-│   ├── browser-client.ts   # Browser-based API client
-│   ├── api-extract.ts      # Main extraction orchestration
-│   ├── export.ts           # CSV/JSON export functions
-│   ├── normalize.ts        # Data normalization
-│   ├── recon.ts            # Network reconnaissance
-│   └── types.ts            # TypeScript type definitions
-├── output/                 # Generated reports (timestamped)
-├── dist/                   # Compiled JavaScript
-├── .ashby-session.json     # Saved authentication session
+│   ├── cli.ts              # Entry point — CLI commands (auth, auth-cookie, recon, extract)
+│   ├── types.ts            # Shared TypeScript interfaces (Candidate, AshbySession, etc.)
+│   ├── session.ts          # Auth & session management (.ashby-session.json)
+│   ├── client.ts           # Ashby GraphQL API client — org switching, pipeline fetch, enrichment
+│   ├── api-extract.ts      # Orchestration for the extract command
+│   ├── export.ts           # CSV and JSON export
+│   ├── recon.ts            # Dev tool: captures live API traffic to ashby-recon-log.json
+│   └── recon-parser.ts     # Dev tool: reads the recon log to extract GraphQL queries
+├── query_ApiApplication.graphql  # GraphQL query used by --detailed enrichment
+├── output/                 # Generated reports (timestamped, gitignored)
+├── dist/                   # Compiled JavaScript (gitignored)
+├── run_ashby_extract.sh    # Convenience wrapper with session expiry detection
+├── .ashby-session.json     # Saved auth session (gitignored)
 ├── package.json            # Node.js dependencies
-└── README.md              # This file
+└── README.md               # This file
 ```
 
 ## Output Schema

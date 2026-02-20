@@ -1,3 +1,14 @@
+/**
+ * types.ts — Shared TypeScript interfaces used across the project.
+ *
+ * Key types:
+ *   AshbySession      — Auth cookies + optional CSRF token, saved to .ashby-session.json
+ *   Candidate         — One active application: pipeline stage, interview data, feedback
+ *   InterviewEvent    — A scheduled interview with interviewers and scorecard submissions
+ *   InterviewFeedback — One interviewer's feedback and rating for an interview
+ *   Company / Job     — Lightweight containers used for CSV/JSON lookup
+ */
+
 export interface Company {
   id: string;
   name: string;

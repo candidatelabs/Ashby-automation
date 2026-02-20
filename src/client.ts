@@ -1,3 +1,25 @@
+/**
+ * client.ts — Ashby GraphQL API client. The core data-fetching layer.
+ *
+ * Talks to Ashby's internal (non-public) GraphQL API at:
+ *   https://app.ashbyhq.com/api/graphql?op=<OperationName>
+ *
+ * Key exports:
+ *   fetchAllAvailableOrgs()        List every org the session user can access (via /api/auth/available_identities)
+ *   fetchPipelineForOrg()          Fetch open jobs + all active applications for one org
+ *   enrichCandidatesWithDetails()  Add interview events, feedback scores, and stage position to candidates
+ *
+ * Multi-org flow (runs once per org during extraction):
+ *   1. GET /api/auth/available_identities  → list of { orgId, userId }
+ *   2. POST /api/auth/change_user/{userId} → switches the session to that org's context
+ *   3. GET /api/csrf/token                 → fresh CSRF token required after every org switch
+ *   4. GraphQL queries run in the new org context
+ *
+ * Detailed enrichment (--detailed flag):
+ *   Loads query_ApiApplication.graphql and calls ApiApplication per candidate to retrieve
+ *   interviewEvents, scorecardSubmissions, feedback text, and interview plan stage ordering.
+ *   Candidates are grouped by org first to minimize the number of org context switches.
+ */
 import fetch from 'cross-fetch';
 import { AshbySession, Candidate, Company, Job } from './types.js';
 

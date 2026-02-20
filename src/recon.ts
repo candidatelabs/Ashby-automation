@@ -1,3 +1,15 @@
+/**
+ * recon.ts — Dev/debug tool for capturing live Ashby API traffic.
+ *
+ * runRecon() opens a Chrome window with your saved session and intercepts all API requests
+ * as you navigate. Results are saved to ashby-recon-log.json when you close the browser.
+ *
+ * Use this if API endpoints change and you need to re-discover query shapes or field names.
+ * After running, use recon-parser.ts to extract specific GraphQL queries from the log.
+ *
+ * NOT required for normal extraction — the queries are hardcoded in client.ts.
+ * Run with: npm run start -- recon
+ */
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
