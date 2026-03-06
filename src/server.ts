@@ -1,0 +1,75 @@
+/**
+ * server.ts -- Express API server for self-serve Ashby pipeline extraction.
+ *
+ * Endpoints:
+ *   POST /api/extract   Accept a cookie string, run extraction, return candidate data as JSON
+ *   GET  /api/health    Health check
+ *
+ * The extraction logic reuses the same code as the CLI `extract` command,
+ * but returns JSON directly instead of writing files.
+ */
+import express from 'express';
+import cors from 'cors';
+import { createSessionFromCookie, extractPipeline } from './api-server-extract.js';
+
+const app = express();
+const PORT = parseInt(process.env.PORT || '3001', 10);
+
+app.use(cors());
+app.use(express.json({ limit: '1mb' }));
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.post('/api/extract', async (req, res) => {
+  const { cookie } = req.body;
+
+  if (!cookie || typeof cookie !== 'string' || !cookie.trim()) {
+    res.status(400).json({ error: 'Missing or empty "cookie" field in request body.' });
+    return;
+  }
+
+  try {
+    const session = createSessionFromCookie(cookie.trim());
+
+    // Validate that the cookie has the required auth token
+    if (!session.cookies['ashby_session_token'] && !session.cookies['authenticated']) {
+      res.status(400).json({
+        error: 'Cookie string is missing the ashby_session_token. Make sure you copy the full cookie from DevTools.'
+      });
+      return;
+    }
+
+    const data = await extractPipeline(session);
+
+    res.json({
+      success: true,
+      extracted_at: new Date().toISOString(),
+      stats: {
+        companies: data.companies.length,
+        jobs: data.jobs.length,
+        candidates: data.candidates.length,
+      },
+      candidates: data.candidates,
+    });
+  } catch (err: any) {
+    const message = err?.message || String(err);
+
+    // Detect auth failures
+    if (message.includes('401') || message.includes('expired') || message.includes('CSRF')) {
+      res.status(401).json({
+        error: 'Session expired or invalid. Please paste a fresh cookie from Ashby.',
+        detail: message,
+      });
+      return;
+    }
+
+    console.error('Extraction error:', message);
+    res.status(500).json({ error: 'Extraction failed.', detail: message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Ashby extraction API listening on port ${PORT}`);
+});
